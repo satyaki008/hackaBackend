@@ -2,7 +2,7 @@
 import time
 from typing import Dict, Any, Optional, Tuple
 import httpx
-from backend.app.config import settings
+from app.config import settings
 
 class StorageNodeClient:
     def __init__(self, timeout: float = 3.0):

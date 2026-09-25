@@ -18,11 +18,11 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models.models import ObjectModel, BucketModel
-from backend.app.services.metadata import metadata_service
-from backend.app.services.replication import ReplicationManager
-from backend.app.services.storage_node_client import storage_node_client
+from app.database import get_db
+from app.models.models import ObjectModel, BucketModel
+from app.services.metadata import metadata_service
+from app.services.replication import ReplicationManager
+from app.services.storage_node_client import storage_node_client
 
 router = APIRouter(prefix="/s3", tags=["S3-Compatible Gateway"])
 replication_manager = ReplicationManager()

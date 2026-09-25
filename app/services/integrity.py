@@ -4,10 +4,10 @@ Performs periodic and on-demand SHA-256 audits, detects bit rot or intentional t
 from typing import Dict, Any, List, Optional
 from sqlalchemy.orm import Session
 
-from backend.app.models.models import ObjectModel, ReplicaModel, NodeModel, IntegrityCheckModel
-from backend.app.services.metadata import metadata_service
-from backend.app.services.storage_node_client import storage_node_client
-from backend.app.utils.hashing import verify_checksum, calculate_sha256
+from app.models.models import ObjectModel, ReplicaModel, NodeModel, IntegrityCheckModel
+from app.services.metadata import metadata_service
+from app.services.storage_node_client import storage_node_client
+from app.utils.hashing import verify_checksum, calculate_sha256
 
 class IntegrityChecker:
     def __init__(self):
@@ -59,7 +59,7 @@ class IntegrityChecker:
             
             if auto_repair:
                 # Trigger repair
-                from backend.app.services.repair import repair_manager
+                from app.services.repair import repair_manager
                 await repair_manager.repair_object(db, obj.id, reason="MISSING_REPLICA")
                 
             return check_rec
@@ -130,7 +130,7 @@ class IntegrityChecker:
 
             if not repaired:
                 # If we couldn't overwrite directly, trigger global repair to allocate onto another healthy node
-                from backend.app.services.repair import repair_manager
+                from app.services.repair import repair_manager
                 ok_rep, rep_msg = await repair_manager.repair_object(db, obj.id, reason="CORRUPTED_REPLICA")
                 action_taken = f"Allocated new replacement replica: {rep_msg}"
 

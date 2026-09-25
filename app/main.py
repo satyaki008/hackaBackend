@@ -11,14 +11,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from backend.app.config import settings, STORAGE_BASE_DIR, BASE_DIR
-from backend.app.database import engine, Base, SessionLocal, apply_migrations
-from backend.app.models.models import NodeModel
-from backend.app.services.metadata import metadata_service
-from backend.app.services.health_monitor import health_monitor
-from backend.app.services.storage_node_client import storage_node_client
-from backend.app.node_server import create_node_app
-from backend.app.api import api_router
+from app.config import settings, STORAGE_BASE_DIR, BASE_DIR
+from app.database import engine, Base, SessionLocal, apply_migrations
+from app.models.models import NodeModel
+from app.services.metadata import metadata_service
+from app.services.health_monitor import health_monitor
+from app.services.storage_node_client import storage_node_client
+from app.node_server import create_node_app
+from app.api import api_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -160,4 +160,4 @@ def get_root(request: Request):
     }
 
 if __name__ == "__main__":
-    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=False)

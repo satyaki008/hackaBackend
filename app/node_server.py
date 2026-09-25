@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 import uvicorn
 
-from backend.app.utils.hashing import calculate_file_sha256, calculate_sha256
+from app.utils.hashing import calculate_file_sha256, calculate_sha256
 
 class NodeState:
     def __init__(self, node_id: str, storage_dir: Path, capacity_bytes: int = 524288000):

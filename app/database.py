@@ -2,7 +2,7 @@ import os
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from sqlalchemy.engine import Engine
-from backend.app.config import settings
+from app.config import settings
 
 # SQLite connection args for concurrent multi-threaded FastAPI access
 connect_args = {}

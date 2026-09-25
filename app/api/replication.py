@@ -3,11 +3,11 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.services.metadata import metadata_service
-from backend.app.services.repair import repair_manager
-from backend.app.schemas.schemas import RepairJobResponse, RepairTriggerRequest
-from backend.app.config import settings
+from app.database import get_db
+from app.services.metadata import metadata_service
+from app.services.repair import repair_manager
+from app.schemas.schemas import RepairJobResponse, RepairTriggerRequest
+from app.config import settings
 
 router = APIRouter(prefix="/replication", tags=["Replication"])
 

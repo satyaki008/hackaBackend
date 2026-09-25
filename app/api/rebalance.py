@@ -2,9 +2,9 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.services.rebalancer import storage_rebalancer
-from backend.app.schemas.schemas import RebalanceStatusResponse
+from app.database import get_db
+from app.services.rebalancer import storage_rebalancer
+from app.schemas.schemas import RebalanceStatusResponse
 
 router = APIRouter(prefix="/rebalance", tags=["Rebalance"])
 

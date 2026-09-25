@@ -3,11 +3,11 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.services.metadata import metadata_service
-from backend.app.services.storage_node_client import storage_node_client
-from backend.app.services.repair import repair_manager
-from backend.app.schemas.schemas import (
+from app.database import get_db
+from app.services.metadata import metadata_service
+from app.services.storage_node_client import storage_node_client
+from app.services.repair import repair_manager
+from app.schemas.schemas import (
     NodeResponse, NodeStatusUpdate, NodeLatencyUpdate, PartitionToggleRequest
 )
 

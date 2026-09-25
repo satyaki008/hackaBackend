@@ -7,12 +7,12 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Q
 from sqlalchemy.orm import Session
 
 from pydantic import BaseModel
-from backend.app.database import get_db
-from backend.app.services.consistent_hash import consistent_hash_ring
-from backend.app.services.auto_healer import auto_healer
-from backend.app.services.mongo_storage_adapter import mongo_storage, mongo_cluster_manager
-from backend.app.services.metadata import metadata_service
-from backend.app.models.models import ObjectModel, ChunkModel, BucketModel, NodeModel
+from app.database import get_db
+from app.services.consistent_hash import consistent_hash_ring
+from app.services.auto_healer import auto_healer
+from app.services.mongo_storage_adapter import mongo_storage, mongo_cluster_manager
+from app.services.metadata import metadata_service
+from app.models.models import ObjectModel, ChunkModel, BucketModel, NodeModel
 
 class CloudNodeConfigRequest(BaseModel):
     uri: str
@@ -108,7 +108,7 @@ async def upload_erasure_object(
         }
     else:
         # Fallback to standard 3x replica
-        from backend.app.services.replication import replication_manager
+        from app.services.replication import replication_manager
         ok, obj, nodes, msg = await replication_manager.replicate_object(
             db=db,
             object_id=object_id,
@@ -180,7 +180,7 @@ async def download_erasure_object(object_id: str, db: Session = Depends(get_db))
         )
     else:
         # Standard replica download
-        from backend.app.api.objects import download_object
+        from app.api.objects import download_object
         return await download_object(object_id, db)
 
 @router.post("/objects/{object_id}/heal")
@@ -213,7 +213,7 @@ def list_buckets(db: Session = Depends(get_db)):
 @router.get("/erasure/matrix")
 def get_erasure_matrix_info():
     """Get the active Galois Field GF(2^8) Cauchy Generator Matrix for RS(4+2)."""
-    from backend.app.services.erasure_coding import build_cauchy_matrix
+    from app.services.erasure_coding import build_cauchy_matrix
     gen_matrix = build_cauchy_matrix(4, 2)
     return {
         "k_data_shards": 4,
@@ -234,7 +234,7 @@ class ShardRecoverySimRequest(BaseModel):
 @router.post("/erasure/simulate-recovery")
 def simulate_erasure_recovery(req: ShardRecoverySimRequest):
     """Simulate loss of any 1 or 2 shards and watch Galois Field Cauchy matrix invert and reconstruct."""
-    from backend.app.services.erasure_coding import erasure_coding_engine
+    from app.services.erasure_coding import erasure_coding_engine
     if len(req.lost_shards) > 2:
         raise HTTPException(status_code=400, detail="RS(4+2) can only tolerate up to 2 lost shards.")
 

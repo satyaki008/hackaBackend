@@ -6,11 +6,11 @@ from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 from sqlalchemy.orm import Session
 
-from backend.app.models.models import NodeModel, ReplicaModel, ObjectModel
-from backend.app.services.metadata import metadata_service
-from backend.app.services.storage_node_client import storage_node_client
-from backend.app.utils.hashing import calculate_sha256, verify_checksum
-from backend.app.config import settings
+from app.models.models import NodeModel, ReplicaModel, ObjectModel
+from app.services.metadata import metadata_service
+from app.services.storage_node_client import storage_node_client
+from app.utils.hashing import calculate_sha256, verify_checksum
+from app.config import settings
 
 class StorageRebalancer:
     def __init__(self):

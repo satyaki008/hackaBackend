@@ -8,12 +8,12 @@ from typing import Dict, List, Optional, Tuple, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import func, desc
 
-from backend.app.models.models import (
+from app.models.models import (
     NodeModel, ObjectModel, ReplicaModel, RepairJobModel,
     IntegrityCheckModel, SystemEventModel, NetworkPartitionModel,
     utc_now, generate_uuid
 )
-from backend.app.config import settings
+from app.config import settings
 
 class MetadataService:
     def __init__(self):

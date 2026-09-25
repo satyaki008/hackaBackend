@@ -10,12 +10,12 @@ from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models.models import NodeModel, ObjectModel, ReplicaModel
-from backend.app.services.metadata import metadata_service
-from backend.app.services.storage_node_client import storage_node_client
-from backend.app.services.repair import repair_manager
-from backend.app.services.replication import ReplicationManager
+from app.database import get_db
+from app.models.models import NodeModel, ObjectModel, ReplicaModel
+from app.services.metadata import metadata_service
+from app.services.storage_node_client import storage_node_client
+from app.services.repair import repair_manager
+from app.services.replication import ReplicationManager
 
 router = APIRouter(prefix="/resilience", tags=["Chaos & Benchmarks"])
 replication_manager = ReplicationManager()

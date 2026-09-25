@@ -6,12 +6,12 @@ import time
 from typing import Dict, Any, List
 from sqlalchemy.orm import Session
 
-from backend.app.services.metadata import metadata_service
-from backend.app.services.replication import replication_manager
-from backend.app.services.repair import repair_manager
-from backend.app.services.integrity import integrity_checker
-from backend.app.services.storage_node_client import storage_node_client
-from backend.app.utils.hashing import calculate_sha256
+from app.services.metadata import metadata_service
+from app.services.replication import replication_manager
+from app.services.repair import repair_manager
+from app.services.integrity import integrity_checker
+from app.services.storage_node_client import storage_node_client
+from app.utils.hashing import calculate_sha256
 
 class DemoRunner:
     def __init__(self):

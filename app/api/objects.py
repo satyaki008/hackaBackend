@@ -8,12 +8,12 @@ from fastapi.responses import StreamingResponse
 import io
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.services.metadata import metadata_service
-from backend.app.services.replication import replication_manager
-from backend.app.services.storage_node_client import storage_node_client
-from backend.app.schemas.schemas import ObjectResponse, ObjectUploadResponse, ReplicaResponse
-from backend.app.config import settings
+from app.database import get_db
+from app.services.metadata import metadata_service
+from app.services.replication import replication_manager
+from app.services.storage_node_client import storage_node_client
+from app.schemas.schemas import ObjectResponse, ObjectUploadResponse, ReplicaResponse
+from app.config import settings
 
 router = APIRouter(prefix="/objects", tags=["Objects"])
 

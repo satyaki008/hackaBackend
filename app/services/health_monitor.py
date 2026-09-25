@@ -6,13 +6,13 @@ from datetime import datetime, timezone
 import logging
 from sqlalchemy.orm import Session
 
-from backend.app.database import SessionLocal
-from backend.app.services.metadata import metadata_service
-from backend.app.services.storage_node_client import storage_node_client
-from backend.app.services.repair import repair_manager
-from backend.app.services.integrity import integrity_checker
-from backend.app.services.rebalancer import storage_rebalancer
-from backend.app.config import settings
+from app.database import SessionLocal
+from app.services.metadata import metadata_service
+from app.services.storage_node_client import storage_node_client
+from app.services.repair import repair_manager
+from app.services.integrity import integrity_checker
+from app.services.rebalancer import storage_rebalancer
+from app.config import settings
 
 logger = logging.getLogger("health_monitor")
 

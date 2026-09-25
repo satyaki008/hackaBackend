@@ -2,10 +2,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.services.demo_runner import demo_runner
-from backend.app.services.metadata import metadata_service
-from backend.app.services.storage_node_client import storage_node_client
+from app.database import get_db
+from app.services.demo_runner import demo_runner
+from app.services.metadata import metadata_service
+from app.services.storage_node_client import storage_node_client
 
 router = APIRouter(prefix="/demo", tags=["Demo"])
 

@@ -5,11 +5,11 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
-from backend.app.database import get_db
-from backend.app.models.models import ObjectModel, ReplicaModel, NodeModel, RepairJobModel
-from backend.app.services.metadata import metadata_service
-from backend.app.schemas.schemas import SystemStatsResponse, SystemEventResponse
-from backend.app.config import settings
+from app.database import get_db
+from app.models.models import ObjectModel, ReplicaModel, NodeModel, RepairJobModel
+from app.services.metadata import metadata_service
+from app.schemas.schemas import SystemStatsResponse, SystemEventResponse
+from app.config import settings
 
 router = APIRouter(tags=["System"])
 

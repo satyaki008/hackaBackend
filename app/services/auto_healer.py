@@ -7,14 +7,14 @@ import hashlib
 from typing import List, Tuple, Dict, Any, Optional
 from sqlalchemy.orm import Session
 
-from backend.app.models.models import ObjectModel, ChunkModel, NodeModel
-from backend.app.services.metadata import metadata_service
-from backend.app.services.erasure_coding import erasure_coding_engine, Chunk
-from backend.app.services.consistent_hash import consistent_hash_ring
-from backend.app.services.merkle_tree import MerkleTree
-from backend.app.services.storage_node_client import storage_node_client
-from backend.app.services.mongo_storage_adapter import mongo_storage, mongo_cluster_manager
-from backend.app.config import settings
+from app.models.models import ObjectModel, ChunkModel, NodeModel
+from app.services.metadata import metadata_service
+from app.services.erasure_coding import erasure_coding_engine, Chunk
+from app.services.consistent_hash import consistent_hash_ring
+from app.services.merkle_tree import MerkleTree
+from app.services.storage_node_client import storage_node_client
+from app.services.mongo_storage_adapter import mongo_storage, mongo_cluster_manager
+from app.config import settings
 
 class AutoHealer:
     def __init__(self):
@@ -198,7 +198,7 @@ class AutoHealer:
         """Autonomous Repair Worker: Reads surviving chunks, uses RS math to reconstruct lost chunks,
         and re-places them on healthy nodes.
         """
-        from backend.app.database import SessionLocal
+        from app.database import SessionLocal
         db: Session = SessionLocal()
         try:
             obj = metadata_service.get_object(db, object_id)
