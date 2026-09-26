@@ -75,7 +75,7 @@ class HealthMonitorService:
                                     message=f"Storage node {node.id} has recovered and is now ONLINE (Ping: {node.response_time_ms}ms)."
                                 )
                                 # Re-check if any degraded objects can now be restored
-                                asyncio.create_task(repair_manager.scan_and_repair_all(db))
+                                asyncio.create_task(self._safe_scan_repair())
                         else:
                             was_online = node.status == "ONLINE"
                             node.status = "OFFLINE"
@@ -90,13 +90,33 @@ class HealthMonitorService:
                                     message=f"Storage node {node.id} heartbeat failed / unreachable! Triggering self-healing repair."
                                 )
                                 # Trigger immediate automatic self-healing repair for this node's objects
-                                asyncio.create_task(repair_manager.handle_node_failure(db, node.id))
+                                asyncio.create_task(self._safe_handle_node_failure(node.id))
                 finally:
                     db.close()
             except Exception as e:
                 logger.error(f"Error in heartbeat loop: {e}")
                 
             await asyncio.sleep(settings.HEARTBEAT_INTERVAL_SECONDS)
+
+    async def _safe_scan_repair(self):
+        """Run scan_and_repair_all with an isolated session."""
+        task_db = SessionLocal()
+        try:
+            await repair_manager.scan_and_repair_all(task_db)
+        except Exception as e:
+            logger.error(f"Error in background repair scan: {e}")
+        finally:
+            task_db.close()
+
+    async def _safe_handle_node_failure(self, failed_node_id: str):
+        """Run handle_node_failure with an isolated session."""
+        task_db = SessionLocal()
+        try:
+            await repair_manager.handle_node_failure(task_db, failed_node_id)
+        except Exception as e:
+            logger.error(f"Error handling failure for node {failed_node_id}: {e}")
+        finally:
+            task_db.close()
 
     async def _integrity_loop(self):
         """Periodic background integrity verification."""

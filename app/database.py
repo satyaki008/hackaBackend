@@ -4,18 +4,28 @@ from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from sqlalchemy.engine import Engine
 from app.config import settings
 
-# SQLite connection args for concurrent multi-threaded FastAPI access
+from sqlalchemy.pool import NullPool
+
+# Connection args and pool configuration
 connect_args = {}
 if "sqlite" in settings.DATABASE_URL:
     connect_args["check_same_thread"] = False
+    connect_args["timeout"] = 30  # SQLite busy timeout at DB-API driver level
+    engine = create_engine(
+        settings.DATABASE_URL,
+        connect_args=connect_args,
+        poolclass=NullPool,  # Completely eliminates QueuePool limit exhaustion for SQLite
+    )
+else:
+    engine = create_engine(
+        settings.DATABASE_URL,
+        pool_size=25,
+        max_overflow=50,
+        pool_timeout=60,
+        pool_pre_ping=True
+    )
 
-engine = create_engine(
-    settings.DATABASE_URL,
-    connect_args=connect_args,
-    pool_pre_ping=True
-)
-
-# Enable WAL mode and foreign keys for high-performance concurrent SQLite
+# Enable WAL mode, foreign keys, and busy timeout for high-performance concurrent SQLite
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
     if "sqlite" in settings.DATABASE_URL:
@@ -23,6 +33,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
         cursor.execute("PRAGMA journal_mode=WAL")
         cursor.execute("PRAGMA synchronous=NORMAL")
         cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.execute("PRAGMA busy_timeout=30000")
         cursor.close()
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
