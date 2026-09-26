@@ -71,9 +71,25 @@ def create_node_app(node_id: str, storage_dir: str, capacity_bytes: int = 524288
             "is_partitioned": state.is_partitioned
         }
 
+    def get_safe_object_path(obj_id: str) -> Path:
+        clean_id = os.path.basename(obj_id).strip()
+        if not clean_id or clean_id in ('.', '..') or '/' in clean_id or '\\' in clean_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Security Error: Invalid object ID or path traversal detected."
+            )
+        resolved = (state.objects_dir / clean_id).resolve()
+        if not str(resolved).startswith(str(state.objects_dir.resolve())):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Security Error: Path traversal attempt blocked."
+            )
+        return resolved
+
     @app.post("/objects/{object_id}")
     async def store_object(object_id: str, request: Request, file: Optional[UploadFile] = File(None)):
         await check_node_availability()
+        file_path = get_safe_object_path(object_id)
         
         # Read payload
         if file is not None:
@@ -89,9 +105,8 @@ def create_node_app(node_id: str, storage_dir: str, capacity_bytes: int = 524288
                 detail=f"Node {state.node_id} capacity exceeded."
             )
             
-        file_path = state.objects_dir / object_id
         # Write to temporary file first, then atomic rename
-        temp_path = state.objects_dir / f"{object_id}.tmp"
+        temp_path = state.objects_dir / f"{file_path.name}.tmp"
         with open(temp_path, "wb") as f:
             f.write(content)
             
@@ -109,18 +124,18 @@ def create_node_app(node_id: str, storage_dir: str, capacity_bytes: int = 524288
     @app.get("/objects/{object_id}")
     async def get_object(object_id: str):
         await check_node_availability()
-        file_path = state.objects_dir / object_id
+        file_path = get_safe_object_path(object_id)
         if not file_path.is_file():
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Object {object_id} not found on node {state.node_id}"
             )
-        return FileResponse(path=file_path, filename=object_id)
+        return FileResponse(path=file_path, filename=file_path.name)
 
     @app.delete("/objects/{object_id}")
     async def delete_object(object_id: str):
         await check_node_availability()
-        file_path = state.objects_dir / object_id
+        file_path = get_safe_object_path(object_id)
         if file_path.is_file():
             file_path.unlink()
             return {"node_id": state.node_id, "object_id": object_id, "status": "DELETED"}
@@ -129,7 +144,7 @@ def create_node_app(node_id: str, storage_dir: str, capacity_bytes: int = 524288
     @app.get("/objects/{object_id}/checksum")
     async def get_checksum(object_id: str):
         await check_node_availability()
-        file_path = state.objects_dir / object_id
+        file_path = get_safe_object_path(object_id)
         if not file_path.is_file():
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

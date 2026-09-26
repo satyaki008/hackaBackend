@@ -3,13 +3,17 @@ Supports connecting Node 1 (and dynamically Nodes 2, 3, 4) to MongoDB Atlas clou
 User provided cluster:
 mongodb+srv://satyakiti008_db_user:3214@cluster0.i7avjwe.mongodb.net/?appName=Cluster0
 """
+import os
 import time
 from typing import Dict, Any, Optional, Tuple, List
 import hashlib
 import pymongo
 from pymongo import MongoClient
 
-DEFAULT_NODE1_URI = "mongodb+srv://satyakiti008_db_user:3214@cluster0.i7avjwe.mongodb.net/?appName=Cluster0"
+DEFAULT_NODE1_URI = os.getenv(
+    "MONGODB_URI",
+    "mongodb+srv://satyakiti008_db_user:3214@cluster0.i7avjwe.mongodb.net/?appName=Cluster0"
+)
 
 class MongoStorageAdapter:
     def __init__(self, node_id: str = "node-1", uri: str = DEFAULT_NODE1_URI, db_name: str = "resistore_storage"):

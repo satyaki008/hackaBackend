@@ -42,7 +42,7 @@ class ObjectModel(Base):
     storage_policy = Column(String(30), nullable=False, default="REPLICA_3X")  # REPLICA_3X or ERASURE_CODING_RS_4_2
     bucket_name = Column(String(100), nullable=False, default="default-bucket")
     merkle_root = Column(String(64), nullable=True)
-    status = Column(String(20), nullable=False, default="HEALTHY")  # HEALTHY, DEGRADED, CORRUPTED, REPAIRING, DELETED
+    status = Column(String(20), nullable=False, default="HEALTHY", index=True)  # HEALTHY, DEGRADED, CORRUPTED, REPAIRING, DELETED
     created_at = Column(DateTime, default=utc_now)
     updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
     
@@ -58,7 +58,7 @@ class ReplicaModel(Base):
     node_id = Column(String(50), ForeignKey("nodes.id", ondelete="CASCADE"), nullable=False, index=True)
     version = Column(Integer, nullable=False, default=1)
     checksum = Column(String(64), nullable=False)
-    status = Column(String(20), nullable=False, default="HEALTHY")  # HEALTHY, CORRUPTED, MISSING, STALE
+    status = Column(String(20), nullable=False, default="HEALTHY", index=True)  # HEALTHY, CORRUPTED, MISSING, STALE
     created_at = Column(DateTime, default=utc_now)
     last_verified_at = Column(DateTime, default=utc_now)
     
@@ -73,8 +73,8 @@ class RepairJobModel(Base):
     object_name = Column(String(255), nullable=False)
     source_node_id = Column(String(50), nullable=True)
     target_node_id = Column(String(50), nullable=False)
-    reason = Column(String(50), nullable=False)  # NODE_FAILURE, CORRUPTED_REPLICA, UNDER_REPLICATED, REBALANCE
-    status = Column(String(20), nullable=False, default="PENDING")  # PENDING, IN_PROGRESS, COMPLETED, FAILED
+    reason = Column(String(50), nullable=False, index=True)  # NODE_FAILURE, CORRUPTED_REPLICA, UNDER_REPLICATED, REBALANCE
+    status = Column(String(20), nullable=False, default="PENDING", index=True)  # PENDING, IN_PROGRESS, COMPLETED, FAILED
     progress_percent = Column(Integer, default=0)
     error_message = Column(Text, nullable=True)
     bytes_transferred = Column(BigInteger, default=0)
